@@ -1,4 +1,5 @@
 import React from "react";
+import { Tab } from "bootstrap";
 import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Pagination from "./common/pagination";
@@ -44,8 +45,7 @@ class Movies extends React.Component {
 
     this.setState({sortColumn});
   };
-  render() {
-    const { length: count } = this.state.movies;
+  getPagedData= () => {
     const {
       pageSize,
       currentPage,
@@ -53,7 +53,6 @@ class Movies extends React.Component {
       movies: allMovies,
       sortColumn
     } = this.state;
-    if (count === 0) return <p>There are no movies in the database.</p>;
 
     const filteredMovies =
       selectedGenre && selectedGenre._id
@@ -62,8 +61,19 @@ class Movies extends React.Component {
 
     const sortedMovies = _.orderBy(filteredMovies,[sortColumn.path],[sortColumn.order]);
 
-    const movies = paginate(sortedMovies, currentPage, pageSize);
-
+    const paginatedMovies = paginate(sortedMovies, currentPage, pageSize);
+    return {totalCount: filteredMovies.length, data:paginatedMovies};
+  };
+  render() {
+    const { length: count } = this.state.movies;
+    const {
+      pageSize,
+      currentPage,
+      sortColumn
+    } = this.state;
+    if (count === 0) return <p>There are no movies in the database.</p>;
+    const {totalCount,data:movies} = this.getPagedData();
+    
     return (
       <div className="row" style={{ paddingTop: "10px" }}>
         <div className="col-3">
@@ -74,14 +84,14 @@ class Movies extends React.Component {
           />
         </div>
         <div className="col">
-          <p>Showing {filteredMovies.length} movies in the database.</p>
+          <p>Showing {totalCount} movies in the database.</p>
           <MoviesTable  movies={movies}
                         sortColumn={sortColumn} 
                         onLike={this.handleLike} 
                         onDelete = {this.handleDelete}
                         onSort={this.handleSort}/>
           <Pagination
-            itemsCount={filteredMovies.length}
+            itemsCount={totalCount}
             currentPage={currentPage}
             pageSize={pageSize}
             onPageChange={this.handlePageChange}

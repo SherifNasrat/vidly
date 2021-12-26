@@ -6,12 +6,12 @@ import React from 'react';
     //Output:
     //onClick 
 
-    const Like = props => {
+    const Like = ({liked,onClick}) => {
         let heartClass = "fa fa-heart";
-        if(!props.liked) heartClass+="-o";
+        if(!liked) heartClass+="-o";
 
         return (
-            <li className={heartClass} style ={{cursor:'pointer'}} onClick={props.onClick} aria-hidden="true"></li>
+            <li className={heartClass} style ={{cursor:'pointer'}} onClick={onClick} aria-hidden="true"></li>
         );
     }
 export default Like;

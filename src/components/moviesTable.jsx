@@ -1,53 +1,41 @@
+import { Tab } from "bootstrap";
 import React from "react";
-import Like from '../components/common/like';
+import Like from "../components/common/like";
+import Table from "./common/table";
 
 class MoviesTable extends React.Component {
-  raiseSort= path => {
-    const sortColumn = {...this.props.sortColumn};
-    if(sortColumn.path===path) 
-    sortColumn.order = (sortColumn.order==='asc') ? 'desc' : 'asc';
-    else
+  columns = [
+    { path: "title", label: "Title" },
+    { path: "genre.name", label: "Genre" },
+    { path: "numberInStock", label: "Stock" },
+    { path: "dailyRentalRate", label: "Rate" },
     {
-      sortColumn.path=path;
-      sortColumn.order='asc';
+      key: "delete",
+      content: movie => (
+        <button className="btn btn-danger" onClick={() => this.props.onDelete(movie._id)}>
+          Delete
+        </button>
+      ),
+    },
+    {
+      key: "like",
+      content: movie => <Like liked={movie.liked} onClick={() => this.props.onLike(movie)} />,
+    },
+  ];
+  raiseSort = (path) => {
+    const sortColumn = { ...this.props.sortColumn };
+    if (sortColumn.path === path)
+      sortColumn.order = sortColumn.order === "asc" ? "desc" : "asc";
+    else {
+      sortColumn.path = path;
+      sortColumn.order = "asc";
     }
     this.props.onSort(sortColumn);
-  }
-  render() { 
-    const { movies,onDelete,onLike } = this.props;
+  };
+  render() {
+    const { movies, sortColumn,onSort} = this.props;
     return (
-      <table className="table">
-        <thead>
-          <tr>
-            <th onClick={()=>this.raiseSort('title')} scope="col">Title</th>
-            <th onClick={()=>this.raiseSort('genre.name')} scope="col">Genre</th>
-            <th onClick={()=>this.raiseSort('numberInStock')} scope="col">Stock</th>
-            <th onClick={()=>this.raiseSort('dailyRentalRate')} scope="col">Rate</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {movies.map((m) => (
-            <tr key={m._id}>
-              <td>{m.title}</td>
-              <td>{m.genre.name}</td>
-              <td>{m.numberInStock}</td>
-              <td>{m.dailyRentalRate}</td>
-              <td>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => onDelete(m._id)}
-                >
-                  Delete
-                </button>
-              </td>
-              <td>
-                <Like liked={m.liked} onClick={() => onLike(m)} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table columns={this.columns} data={movies} sortColumn={sortColumn} onSort={onSort} />
     );
   }
 }

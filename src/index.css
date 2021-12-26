@@ -20,3 +20,6 @@ code {
 .navbar{
   margin-bottom: 30px;
 }
+.clickable{
+  cursor:pointer;
+}
