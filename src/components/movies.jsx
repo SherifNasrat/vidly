@@ -1,5 +1,4 @@
 import React from "react";
-import { Tab } from "bootstrap";
 import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Pagination from "./common/pagination";

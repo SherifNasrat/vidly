@@ -1,5 +1,4 @@
 import React from "react";
-import { Tab } from "bootstrap";
 //columns: array
 //sortColumn: object
 //onSort: function
